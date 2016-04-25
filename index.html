@@ -1,0 +1,223 @@
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://localhost:8181/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+    if (typeof (ChatNodeAPI) == "undefined") { var ChatNodeAPI = {}; }
+    ChatNodeAPI = function (sender, receiver, size) {
+        // Cau truc tin nhan [{sender:"abc",receiver:"xys",idmsg:"e3efdfdsfa","contentmsg":"hello","time":"10/04/2014 12:23","successfull":0},{"sender":"abc","receiver":"xys","idmsg":"e3efdfdsfa","contentmsg":"hello","time":"10/04/2014 12:23","successfull":0}]
+        // Cau truc sender, receiver {"username":"abc","fullname":"A B C","avatar":"link"}
+        this.emotion = [":)", ":(", ":P", "=D", ":o", ";)", ":v",
+            ">:(", ":/", ":'(", "^_^", "8)", "B|", "<3",
+            "3:)", "O:)", "-_-", "o.O", ">:o", ":3", "(y)"];
+        this.emotion_style = ["emotion_smile", "emotion_frown", "emotion_tongue", "emotion_grin", "emotion_gasp", "emotion_wink", "emotion_pacman",
+            "emotion_grumpy", "emotion_unsure", "emotion_cry", "emotion_kiki", "emotion_glasses", "emotion_sunglasses", "emotion_heart",
+            "emotion_devil", "emotion_angle", "emotion_squint", "emotion_confused", "emotion_upset", "emotion_colonthree", "emotion_like"];
+        this.sender = sender;
+        this.receiver = receiver;
+        this.size = size;
+        this.header = $("<div class='title-chat'>" +
+                "<div class='textHeader-chat'>" +
+                "<a>" + receiver.fullname + "</a>" +
+                "</div>" +
+                "<div class='actionHeader-chat'>" +
+                "<a class='action-close'></a>" +
+                "</div>" +
+                "</div>");
+        this.content = $("<div class='content-chat'></div>");
+        this.input = $("<div class='input-chat'>" +
+                "<div class='input-txta'>" +
+                "<textarea class='input-txta-chat'></textarea>" +
+                "</div>" +
+                "<div class='input-emotion'>" +
+                "<img src='Image/4.jpg' />" +
+                "</div>" +
+                "</div>");
+        this.contact = $("<div id='contact-" + receiver.username + "' class='usercontact'></div>");
+        this.emotion = $("<div class='dialogIcon'>" +
+                "<table>" +
+                "<tr>" +
+                "<td><span title=':)' class='iconfb1' style='background-position: -238px -133px; color:transparent'></span></td>" +
+                "<td><span title=':(' class='iconfb1' style='background-position: -68px -184px; color:transparent'></span></td>" +
+                "<td><span title=':P' class='iconfb1' style='background-position: -289px -133px; color:transparent'></span></td>" +
+                "<td><span title='=D' class='iconfb1' style='background-position: -68px -133px; color:transparent'></span></td>" +
+                "<td><span title=':o' class='iconfb1' style='background-position: -136px -167px; color:transparent'></span></td>" +
+                "<td><span title=';)' class='iconfb1' style='background-position: -34px -150px; color:transparent'></span></td>" +
+                "<td><span title=':v' class='iconfb1' style='background-position: -153px -133px; color:transparent'></span></td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td><span title='>:(' class='iconfb1' style='background-position: -85px -133px; color:transparent'></span></td>" +
+                "<td><span title=':/' class='iconfb1' style='background-position: -0px -150px; color:transparent'></span></td>" +
+                "<td><span title=\":'(\" class='iconfb1' style='background-position: -34px -184px; color:transparent'></span></td>" +
+                "<td><span title='^_^' class='iconfb1' style='background-position: -119px -133px; color:transparent'></span></td>" +
+                "<td><span title='8)' class='iconfb1' style='background-position: -52px -133px; color:transparent'></span></td>" +
+                "<td><span title='B|' class='iconfb1' style='background-position: -204px -150px; color:transparent'></span></td>" +
+                "<td><span title='<3' class='iconfb1' style='background-position: -255px -167px; color:transparent'></span></td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td><span title='3:)' class='iconfb1' style='background-position: -51px -183px; color:transparent'></span></td>" +
+                "<td><span title='O:)' class='iconfb1' style='background-position: -272px -166px; color:transparent'></span></td>" +
+                "<td><span title='-_-' class='iconfb1' style='background-position: -255px -133px; color:transparent'></span></td>" +
+                "<td><span title='o.O' class='iconfb1' style='background-position: -0px -184px; color:transparent'></span></td>" +
+                "<td><span title='>:o' class='iconfb1' style='background-position: -17px -150px; color:transparent'></span></td>" +
+                "<td><span title=':3' class='iconfb1' style='background-position: -289px -167px; color:transparent'></span></td>" +
+                "<td><span title='(y)' class='iconfb1' style='background-position: -0px -66px; color:transparent'></span></td>" +
+                "</tr>" +
+                "</table>" +
+                "</div>");
+
+        this.initialize = function () {
+            var _this = this;
+            alert('khoi tao');
+
+        };
+    };
+</script>
+    <script>
+    window.onload = function(){
+        var input = document.getElementById('input');
+        var output = document.getElementById('output');
+        var username = document.getElementById('username');
+        var receiver = document.getElementById('receiver');
+        var contentmsg = document.getElementById('contentmsg');
+        var contentdiv = document.getElementById('contentdiv');
+        var contentlog = document.getElementById('contentlog');
+        var socket;
+        window.connectSocket = function(){
+            if(username.value == ''){
+                alert('Hay nhap ten user');
+                return;
+            }
+            socket = io.connect('http://localhost:8181/');
+            socket.emit("client connect",username.value);
+            socket.on("get userinfo",function(contactlog,data){
+                alert(contactlog[0].fullname);
+            });
+            socket.on("user new connect",function(data){
+                alert(data);
+            })
+            socket.on('error', function (data) {
+                        console.log("error:",data);
+                    }
+            );
+
+            socket.on('news', function (data) {
+                output.innerHTML = '=' + data;
+            });
+
+            socket.on("notification", function(data){
+                var node = document.createElement("p");
+                var textnode = document.createTextNode(data[0]);
+                node.appendChild(textnode);
+                contentlog.appendChild(node);
+            });
+            socket.on('receive new message',function(data){ // hieen thi tin nhan
+                //alert(data.contentmessage);
+                var node=document.createElement("p");
+                var textnode=document.createTextNode(data.sender+": "+data.contentmessage + data._id);
+                node.appendChild(textnode);
+                contentdiv.appendChild(node);
+            });
+            socket.on("return last message", function(data){
+                alert(JSON.stringify(data));
+                alert(data.teams[0]._id);
+                socket.emit("get message by id",data.teams[0]._id);
+            });
+            socket.on("return message by id",function(data){
+                alert(data.contentmessage);
+            });
+            socket.on("fetch data", function(data){
+                var node = document.createElement("p");
+                var textnode = document.createTextNode(data[0]);
+                node.appendChild(textnode);
+                contentlog.appendChild(node);
+            });
+        };
+
+        window.sendMessage = function(){
+            if(typeof socket ==="undefined"){
+                alert("chua ket noi toi server")
+                return;
+            }
+            socket.emit('private msg',{ receiver:receiver.value,sender:username.value,contentmessage:contentmsg.value})
+        };
+        window.getuserconnect = function(){
+            if(typeof socket ==="undefined"){
+                alert("chua ket noi toi server")
+                return;
+            }
+                socket.emit("update field contact",username.value,receiver.value,"contacting",contentmsg.value);
+
+            socket.emit("update contact", username.value, { username:receiver.value,fullname:contentmsg.value});
+        };
+
+        window.testcallback = function(){
+            alert('aa');
+            socket.emit("notification test",function(){
+                alert('callback complete');
+            });
+        };
+
+        window.chat = function(user){
+            if(typeof socket ==="undefined"){
+                alert("chua ket noi toi server")
+                return;
+            }
+            var chatapi = new ChatNodeAPI({username:username.value,fullname:"long",avatar:"link"},{username:user,fullname:user,avatar:"link"},1);
+            alert('adsd');
+            $("body").append(chatapi.initialize());
+            alert('adsd');
+            socket.emit('private msg',{ receiver:user,sender:username.value,contentmessage:contentmsg.value})
+        };
+
+        window.getlogin = function(){
+            socket.emit('')
+        };
+    }
+     
+    </script>
+    <input type="text" id="username"/> <input type="button" id="connect" value="connect" onclick="connectSocket();" />
+<br/>
+<div id="contentdiv">
+
+</div>
+<input type="text" id="receiver"/>
+<input type="text" id="contentmsg"/>
+<input type="button" id="sendmsg" value="send" onclick="sendMessage();"/>
+
+
+
+
+<input type='text' id='input' />
+        <span id='output'></span>
+        <br/>
+        <input type='button' id='send' value='calc' onclick='getuserconnect();' />
+
+<input type='button' id='callback' value='callback' onclick='testcallback();' />
+<div id="contentlog"></div>
+
+
+<script>
+    $(document).ready(function(){
+        $("#title-list-contact").click(function(){
+            if($("#content-list-contact").css("display")!=="none"){
+                $("#content-list-contact").css("display","none");
+                $("#search-list-contact").css("display","none");
+                $("#list-contact").css("width",100);
+                $("#list-contact").css("height",30);
+
+            }else{
+                $("#content-list-contact").css("display","block");
+                $("#search-list-contact").css("display","block");
+                $("#content-list-contact").css("height",470);
+                $("#search-list-contact").css("height",30);
+                $("#list-contact").css("width",250);
+                $("#list-contact").css("height",500);
+            }
+        });
+    });
+</script>
+<div id="list-contact">
+    <div id="title-list-contact"></div>
+    <div id="content-list-contact"></div>
+</div>
+
+<div class='hccstep'><div class='hccsteptitle'><b>1.</b>Ông Hoàng Huy Long: Thụ lý giải quyết</div><div class='hccstepcontent'><table class='hccitem'><tr><td><div class='hcchandling'></div></td><td><div class='hccstepstar'></div></td></tr></table><table><tr><td>Người đề nghị:</td><td>Hoàng Huy Long</td></tr><tr><td>Ngày đề nghị:</td><td>22/07/2014</td></tr></div></div>"

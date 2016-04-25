@@ -1,0 +1,30 @@
+{
+  "name": "simplerealtime",
+  "version": "1.0.0",
+  "description": "server simple for my app chat,just use socket.io, mongodb",
+  "main": "server.js",
+  "dependencies": {
+    "socket.io":"latest",
+    "mongodb":"latest",
+    "underscore":"latest"
+    },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atum201/simplerealtime.git"
+  },
+  "keywords": [
+    "socket.io",
+    "mongodb"
+  ],
+  "author": "atum201",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/atum201/simplerealtime/issues"
+  },
+  "homepage": "https://github.com/atum201/simplerealtime#readme"
+}

@@ -1,0 +1,1 @@
+server simple for my app chat,just use socket.io, mongodb see index.html for example
