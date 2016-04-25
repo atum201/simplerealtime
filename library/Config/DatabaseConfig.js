@@ -1,9 +1,9 @@
 var DatabaseConfig = {
-    host: '203.162.121.204',
+    host: 'localhost',
     port: 27017,
-    database: 'hpn',
-	user:'adminhpn',
-	pwd:'CNTT1234',
+    database: '',
+	user:'',
+	pwd:'',
     getConnectionString: function() {
         return 'mongodb://'+this.user+':'+this.pwd+'@' + this.host + ':' + this.port + '/' + this.database;
     }
